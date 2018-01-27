@@ -1,0 +1,28 @@
+.
+
+## log update
+
+2017-08-24
+- fix import file for product stock.
+- update user interface for import product stock.
+- fix print product.
+- fix scan product.
+- update laopran product, transaksi satuan, transaksi grosir.
+- fix update retur satuan.
+- fix transaksi penjualan.
+
+2017-08-28
+- update js script penjualan.
+- update log untuk mutasi.
+
+2017-09-11
+- update transaksi grosir
+
+
+2017-10-14
+- mutasi barang
+
+
+
+
+retur barang item grosir dengan kode stock

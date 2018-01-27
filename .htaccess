@@ -1,0 +1,24 @@
+# No root access without index.*
+#Options -Indexes
+DirectoryIndex index.php index.html index.htm
+#IndexIgnore *.zip *.css *.js *.json *.py *.rb *.cgi *.pl
+
+# Rewrite
+RewriteEngine On
+#RewriteBase /
+RewriteRule ^(application|system) - [F,L]
+
+# Existing file
+#RewriteCond %{REQUEST_FILENAME} !-f
+
+# Existing directory
+#RewriteCond %{REQUEST_FILENAME} !-d
+
+# Symbolic link
+#RewriteCond %{REQUEST_FILENAME} !-l
+#RewriteRule ^ your-default-file.html [L]
+#RewriteRule ^(.*)\.html$ /$1 [L,R=301]
+
+# replace index.php
+RewriteCond $1 !^(index\.php|xd_receiver\.htm|googlehostedservice\.html|userdata|assets)
+RewriteRule (.*) index.php?/$1 [L]
