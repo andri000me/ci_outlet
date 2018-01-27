@@ -1,0 +1,298 @@
+<?php
+/**
+* Controller penjualan
+*/
+class Penjualan extends CI_Controller
+{
+
+	function __construct()
+	{
+		parent::__construct();
+		if(!is_login()) redirect('signin');
+		$this->load->model('M_product');
+		$this->load->model('M_penjualan');
+		$this->load->model('M_setting');
+		$this->load->model('M_log_stock');
+	}
+
+	public function index($param1=null, $param2=null, $param3=null) {
+		$id_user = my_userid();
+		$id_lokasi = my_location();
+		$data['grosir_tmp'] = $this->M_penjualan->show_grosir_tmp($id_user,$id_lokasi);
+		$data['grosir_tmp_ttl'] = $this->M_penjualan->show_grosir_tmp_ttl($id_user,$id_lokasi);
+		$data['title'] = 'Penjualan';
+		$data['br'] = '';
+		$data['penjualan'] = 'class="active"';
+		$data['js'] = 'penjualan/daftar';
+		$data['page'] = 'penjualan/daftar';
+		$this->load->view('page', $data);
+	}
+
+	public function submit_scan($barcode)
+	{
+		// $kode_product = get_kodeproduct($barcode);
+		$kode_stock = $barcode;
+		// $stock_awal = stock(get_idproduct($kode_product));
+		if ($kode_stock!=null) {
+			$g = check_barcode($kode_stock);
+			if ($g==0) {
+				echo 'empty';
+			}
+			else if ($g==1) {
+				$get_nofaktur = $this->M_penjualan->last_no_faktur();
+				$last_no_faktur = $get_nofaktur->row()->max_no_faktur;
+				$no_faktur_need_zero = $last_no_faktur+1;
+				
+				if(strlen($no_faktur_need_zero)==1){$no_faktur_plus_zero = '000000'.$no_faktur_need_zero;}
+				elseif(strlen($no_faktur_need_zero)==2){$no_faktur_plus_zero = '00000'.$no_faktur_need_zero;}
+				elseif(strlen($no_faktur_need_zero)==2){$no_faktur_plus_zero = '0000'.$no_faktur_need_zero;}
+				elseif(strlen($no_faktur_need_zero)==3){$no_faktur_plus_zero = '000'.$no_faktur_need_zero;}
+				elseif(strlen($no_faktur_need_zero)==4){$no_faktur_plus_zero = '00'.$no_faktur_need_zero;}
+				elseif(strlen($no_faktur_need_zero)==5){$no_faktur_plus_zero = '0'.$no_faktur_need_zero;}
+				elseif(strlen($no_faktur_need_zero)==6){$no_faktur_plus_zero = $no_faktur_need_zero;}
+				$no_faktur_now = $no_faktur_plus_zero;
+				$id_faktur = $this->M_penjualan->newid();
+
+				$id_stok = get_idstock($kode_stock);
+				$kode_product = stock_kodeproduct($kode_stock);
+				$id_product = get_idproduct($kode_product);
+				$stock_awal = stock($id_product);
+
+				$arr_faktur['id_faktur'] = $id_faktur;
+				$arr_faktur['no_faktur'] = $no_faktur_now;
+				$arr_faktur['id_user'] = my_userid();
+				$arr_faktur['id_lokasi'] = my_location();
+				$arr_faktur['tanggal'] = date('Y-m-d H:i:s');
+				$arr_faktur['totalitem'] = 1;
+				$arr_faktur['totaldisc'] = null;
+				$arr_faktur['totalbelanja_awal'] = null;
+				$arr_faktur['totalbelanja_akhir'] = harga($id_product);
+				$arr_faktur['tunai'] = null;
+				$arr_faktur['kembali'] = null;
+				$arr_faktur['flag_transaksi'] = 1;
+				$arr_faktur['kode_product'] = stock_kodeproduct($kode_stock);
+				$arr_faktur['kode_stock'] = $barcode;
+				$arr_faktur['nama_product'] = product($id_product);
+				$arr_faktur['harga_satuan'] = harga($id_product);
+				$arr_faktur['id_product'] = $id_product;
+
+				$arr['flag'] = '0';
+				// echo json_encode($arr_faktur);
+				$this->M_product->update_stock($arr, $kode_stock);
+				$this->M_penjualan->insert($arr_faktur);
+
+				$arr_log['id_product'] = $id_product;
+				$arr_log['id_user'] = my_userid();
+				$arr_log['id_lokasi'] = my_location();
+				$arr_log['tanggal'] = date('Y-m-d H:i:s');
+				$arr_log['kode'] = stock_kodeproduct($kode_stock);
+				$arr_log['product'] = product($id_product);
+				$arr_log['quantity_awal'] = $stock_awal;
+				$arr_log['quantity_akhir'] = stock($id_product);
+				$arr_log['quantity_tambah'] = null;
+				$arr_log['quantity_jual'] = 1;
+				$arr_log['harga_satuan'] = harga($id_product);
+				$arr_log['harga_masuk'] = null;
+				$arr_log['harga_keluar'] = 1*harga($id_product);
+				// echo json_encode($arr_log);
+				$this->M_log_stock->insert($arr_log);
+
+				$detail_transaksi = $this->M_penjualan->detail_transaksi($id_faktur);
+				$waktu_transaksi = $detail_transaksi->row()->tanggal;
+				$data['id_faktur'] = $id_faktur;
+				$data['no_faktur'] = $detail_transaksi->row()->no_faktur;
+				$data['set'] = $this->M_setting->show();
+				$data['waktu_transaksi'] = $waktu_transaksi;
+				$data['listdata'] = $this->M_penjualan->detail_transaksi($id_faktur);
+				$data['totalbelanja'] = $this->M_penjualan->total_detail_transaksi($id_faktur);
+				$this->load->view('penjualan/print', $data);
+			}
+			else {
+				echo 'unlist';
+			}
+		}
+	}
+
+	public function grosir_insert()
+	{
+		$gsr_kode = $this->input->post('pbarcode');
+		$gsr_product = $this->input->post('pproduct');
+		$gsr_harga = $this->input->post('pharga');
+		$gsr_jumlah = $this->input->post('pjumlah');
+		$gsr_total = $this->input->post('ptotal');
+		$gsr_diskon = $this->input->post('pdiskon');
+
+		$kd = stock_kodeproduct($gsr_kode);
+    if($kd==NULL) $kd_product = $gsr_kode;
+    else $kd_product = $kd;
+
+		$arr_data = array(
+			'id_user'=> my_userid(),
+			'id_lokasi'=> my_location(),
+			'id_product'=> get_idproduct($kd_product),
+			'kode'=>$kd_product,
+			'jumlah'=> $gsr_jumlah,
+			'hargasatuan'=> $gsr_harga,
+			'product'=> $gsr_product,
+			'diskon'=> $gsr_diskon,
+			'total'=> $gsr_total,
+			'flag'=> 1
+		);
+		// daftar stock
+		$qstock = $this->M_product->stock_limit(get_idproduct($kd_product), $gsr_jumlah);
+		foreach ($qstock->result() as $qst) {
+			$this->M_product->stock_limit_update($qst->id_pdetail);
+		}
+
+		$this->M_penjualan->input_grosir_tmp($arr_data);
+		echo json_encode($arr_data);
+	}
+
+	public function gsr_check()
+	{
+		$kd = $this->input->post('param1');
+		$check = $this->M_product->barcode($kd);
+		// echo $this->db->last_query();
+		if ($check->result()) {
+			$id_product = $check->row()->id_product;
+			$get = $this->M_product->get($id_product);
+			if ($get->result()) {
+				$kode = $get->row()->kode;
+				$aget = $this->M_product->get_detail($kode);
+				$product = $aget->row()->product;
+				$harga = $aget->row()->harga_jual;
+				$arr = array('id'=>$id_product, 'kode'=>$kode, 'product'=>$product, 'harga'=>$harga, 'stock'=>stock($id_product));
+				echo json_encode($arr);
+			}
+			else {
+				$arr = array('id'=>'', 'kode'=>'', 'product'=>'', 'harga'=>'', 'stock'=>'');
+				echo json_encode($arr);
+			}
+		}
+		else {
+			$get = $this->M_product->get_detail_k($kd);
+			if ($get->result()) {
+				$id_product = $get->row()->id_product;
+				$kode = $get->row()->kode;
+				$harga = $get->row()->harga_jual;
+				$product = $get->row()->product;
+				$arr = array('id'=>$id_product, 'kode'=>$kode, 'product'=>$product, 'harga'=>$harga, 'stock'=>stock($id_product));
+				echo json_encode($arr);
+			}
+			else {
+				$arr = array('id'=>'', 'kode'=>'', 'product'=>'', 'harga'=>'', 'stock'=>'');
+				echo json_encode($arr);
+			}
+		}
+	}
+
+
+
+
+	public function gsr_stock()
+	{
+		$kd = $this->input->post('param1');
+		if (get_kodeproduct($kd)!=null) {
+			$kode = get_kodeproduct($kd);
+			$get = $this->M_product->get_detail_k($kode);
+			$id_product = $get->row()->id_product;
+		}
+		elseif ($this->M_product->get_detail_k($kd)->result()) {
+			$get = $this->M_product->get_detail_k($kd);
+			$id_product = $get->row()->id_product;
+		}
+		echo json_encode(stock($id_product));
+	}
+
+	public function print_gsr()
+	{
+		$id_user = my_userid();
+		$id_lokasi = my_location();
+		$total = $this->input->post('totalbelanaja');
+
+		// echo json_encode($total);
+		// faktur	
+		$get_nofaktur = $this->M_penjualan->last_grosir_faktur();
+		$last_no_faktur = $get_nofaktur->row()->max_no_faktur;
+		$no_faktur_need_zero = $last_no_faktur+1;
+		
+		if(strlen($no_faktur_need_zero)==1){$no_faktur_plus_zero = '000000'.$no_faktur_need_zero;}
+		elseif(strlen($no_faktur_need_zero)==2){$no_faktur_plus_zero = '00000'.$no_faktur_need_zero;}
+		elseif(strlen($no_faktur_need_zero)==2){$no_faktur_plus_zero = '0000'.$no_faktur_need_zero;}
+		elseif(strlen($no_faktur_need_zero)==3){$no_faktur_plus_zero = '000'.$no_faktur_need_zero;}
+		elseif(strlen($no_faktur_need_zero)==4){$no_faktur_plus_zero = '00'.$no_faktur_need_zero;}
+		elseif(strlen($no_faktur_need_zero)==5){$no_faktur_plus_zero = '0'.$no_faktur_need_zero;}
+		elseif(strlen($no_faktur_need_zero)==6){$no_faktur_plus_zero = $no_faktur_need_zero;}
+		$no_faktur_now = $no_faktur_plus_zero;
+		$id_faktur = $this->M_penjualan->newid_grosir();
+
+		$arr_faktur['id_faktur'] = $id_faktur;
+		$arr_faktur['no_faktur'] = $no_faktur_now;
+		$arr_faktur['id_user'] = $id_user;
+		$arr_faktur['id_lokasi'] = $id_lokasi;
+		$arr_faktur['tanggal'] = date('Y-m-d H:i:s');
+		$arr_faktur['total'] = $total;
+		// echo json_encode($arr_faktur);
+		$this->M_penjualan->input_grosir($arr_faktur);
+
+		// // temp
+		$temp = $this->M_penjualan->show_grosir_tmp($id_user,$id_lokasi);
+		if ($temp->result()) {
+			foreach ($temp->result() as $tmp) {
+				$stock_awal = stock($tmp->id_product);
+				$arr_tmp['id_faktur']=$id_faktur;
+				$arr_tmp['id_product']=$tmp->id_product;
+				$arr_tmp['kode']=$tmp->kode;
+				$arr_tmp['jumlah']=$tmp->jumlah;
+				$arr_tmp['hargasatuan']=$tmp->hargasatuan;
+				$arr_tmp['product']=$tmp->product;
+				$arr_tmp['diskon']=$tmp->diskon;
+				$arr_tmp['total']=$tmp->total;
+				// echo json_encode($arr_tmp);
+				$this->M_penjualan->input_grosir_detail($arr_tmp);
+
+				$arr_log['id_product'] = $tmp->id_product;
+				$arr_log['id_user'] = my_userid();
+				$arr_log['id_lokasi'] = my_location();
+				$arr_log['tanggal'] = date('Y-m-d H:i:s');
+				$arr_log['kode'] = $tmp->kode;
+				$arr_log['product'] = product($tmp->id_product);
+				$arr_log['quantity_awal'] = null;//$stock_awal;
+				$arr_log['quantity_akhir'] = stock($tmp->id_product);
+				$arr_log['quantity_tambah'] = null;
+				$arr_log['quantity_jual'] = $tmp->jumlah;
+				$arr_log['harga_satuan'] = harga($tmp->id_product);
+				$arr_log['harga_masuk'] = null;
+				$arr_log['harga_keluar'] = $tmp->jumlah*harga($tmp->id_product);
+				// echo json_encode($arr_faktur);
+				$this->M_log_stock->insert($arr_log);
+			}
+
+			$arr['total'] = $this->M_penjualan->show_grosir_tmp_ttl($id_user,$id_lokasi);
+			$this->M_penjualan->update_grosir($arr, $id_faktur);
+			$this->M_penjualan->deleteall_grosir_tmp($id_user);
+
+			// print
+			$detail_transaksi = $this->M_penjualan->show_grosir($id_user,$id_lokasi,$id_faktur,null);
+			$waktu_transaksi = $detail_transaksi->row()->tanggal;
+			$data['id_faktur'] = $id_faktur;
+			$data['no_faktur'] = $detail_transaksi->row()->no_faktur;
+			$data['set'] = $this->M_setting->show();
+			$data['waktu_transaksi'] = $waktu_transaksi;
+			$data['listdata'] = $this->M_penjualan->show_grosir_detail($id_faktur,null);
+			$data['totalbelanja'] = $this->M_penjualan->total_grosir_detail($id_faktur,null);
+			$this->load->view('penjualan/print2', $data);
+		}
+		else {
+			echo 'unlist';
+		}
+	}
+
+	public function del_itm($param1)
+	{
+		$id = decrypts($param1);
+		$this->M_penjualan->delete_grosir_tmp($id);
+		$this->session->set_flashdata('msg_gsr',msg_success('Data berhasil dihapus.'));
+		redirect('penjualan');
+	}
+}
