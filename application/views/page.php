@@ -5,6 +5,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<meta name="application-name" content="<?php echo set()['nama']?>">
 	<link rel="stylesheet" href="<?php echo base_url();?>assets/plugins/font-awesome/css/font-awesome.css">
 	<link rel="stylesheet" href="<?php echo base_url();?>assets/plugins/sweetalert2/dist/sweetalert2.min.css">
 	<link rel="stylesheet" href="<?php echo base_url();?>assets/bootstrap/css/bootstrap.css">
@@ -14,6 +15,8 @@
 	<link rel="stylesheet" href="<?php echo base_url();?>assets/mite.css">
 	<link rel="stylesheet" href="<?php echo base_url();?>assets/datepicker.min.css">
 	<link rel="stylesheet" href="<?php echo base_url();?>assets/plugins/daterangepicker/daterangepicker.css">
+	<link rel="stylesheet" href="<?php echo base_url();?>assets/plugins/datatables/jquery.dataTables.css">
+	<link rel="stylesheet" href="<?php echo base_url();?>assets/plugins/datatables/dataTables.bootstrap.css">
 	<!-- <link rel="stylesheet" href="<?php echo base_url();?>assets/plugins/datepicker/datepicker3.css"> -->
 	<script type="text/javascript">var app={base_url:'<?php echo base_url();?>'}</script>
 	<script type="text/javascript" src="<?php echo base_url();?>assets/plugins/jQuery/jquery-2.2.3.min.js"></script>
@@ -27,6 +30,8 @@
 	<script type="text/javascript" src="<?php echo base_url();?>assets/plugins/daterangepicker/daterangepicker.js"></script>
 	<!-- <script type="text/javascript" src="<?php echo base_url();?>assets/plugins/datepicker/bootstrap-datepicker.js"></script> -->
 	<script type="text/javascript" src="<?php echo base_url();?>assets/plugins/sweetalert2/dist/sweetalert2.min.js"></script>
+	<script type="text/javascript" src="<?php echo base_url();?>assets/plugins/datatables/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="<?php echo base_url();?>assets/plugins/datatables/dataTables.bootstrap.js"></script>
 	<?php if(@$js!=NULL) echo '<script type="text/javascript" src="'.base_url().'assets/core/'.$js.'.js"></script>';?>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
@@ -216,6 +221,7 @@
 					<?php } ?>
 					<?php if (my_level()==null || my_level()=='Admin') { ?>
 					<li <?php if(@$retur) echo $retur;?> ><?php echo anchor('retur/index/product','<i class="fa fa-rotate-left"></i> <span>Product Retur</span>'); ?></li>
+					<li <?php if(@$blog) echo $blog;?> ><?php echo anchor('blog','<i class="fa fa-th-large"></i> <span>Blog</span>'); ?></li>
 					<?php } ?>
 	      </ul>
 	    </section>

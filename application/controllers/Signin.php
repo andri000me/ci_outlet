@@ -37,8 +37,8 @@ class Signin extends CI_Controller
       'font_size'     => 16,
       'img_id'        => 'Imageid',
       'pool'          => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
-		  'img_path'      => './assets/images/',
-		  'img_url'       => base_url().'/assets/images/'
+		  'img_path'      => './assets/img_temp/',
+		  'img_url'       => base_url().'/assets/img_temp/'
 		);
 		$cap = create_captcha($vals);
 		$data = array(
@@ -62,8 +62,8 @@ class Signin extends CI_Controller
       'font_size'     => 16,
       'img_id'        => 'Imageid',
       'pool'          => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
-		  'img_path'      => './assets/images/',
-		  'img_url'       => base_url().'/assets/images/'
+		  'img_path'      => './assets/img_temp/',
+		  'img_url'       => base_url().'/assets/img_temp/'
 		);
 
 		$cap = create_captcha($vals);
