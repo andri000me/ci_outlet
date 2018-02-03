@@ -92,6 +92,7 @@
             </div>
           </form>
         </div>
+        <h4 class="text-center"><a href="<?php echo base_url()?>" class="text-clouds"><i class="fa fa-arrow-circle-left"></i> Back to Home</a></h4>
       </div>
       <div class="col-md-4">&nbsp;</div>
     </div>

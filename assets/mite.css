@@ -19,6 +19,13 @@
   color: #ecf0f1 !important;
 }
 
+.text-clouds, a.text-clouds {
+  color: #ecf0f1;
+}
+a.text-clouds:hover, a.text-clouds:focus {
+  color: #bdc3c7;
+}
+
 input[type=file] {
   position: absolute;
   top: 0;
