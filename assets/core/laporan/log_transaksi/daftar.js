@@ -15,4 +15,45 @@ $(function() {
 			}
 		);
   });
+
+  $('table[for="pcs_list"]').DataTable({
+    "paging": true,
+    "lengthChange": false,
+    "searching": true,
+    "ordering": false,
+    "info": false,
+    "pageLength": 15,
+    "autoWidth": false,
+    "oLanguage": {
+      "oPaginate": {
+        "sNext": '»',
+        "sPrevious": '«'
+      },
+      "sZeroRecords":    "TIDAK ADA DATA YANG SESUAI",
+      "sLoadingRecords": "DATA KOSONG",
+      "sEmptyTable":     "DATA TIDAK TERSEDIA",
+    }
+  });
 });
+
+function print(val) {
+  var printableObjects=[];
+  $.post(app.base_url+'laporan/print_faktur_pcs', {faktur: val}, function(data, textStatus, xhr) {
+    // console.log(data)
+    printableObjects.push(data);
+    printableObjects.forEach(function(d){
+      printContent(d);
+    });
+    return printableObjects;
+  });
+}
+
+function printContent(printDoc){
+  var newWin = window.open();
+  var restorepage = document.body.innerHTML;
+  var printcontent = printDoc;
+  newWin.document.body.innerHTML = printcontent;
+  newWin.print();
+  newWin.document.body.innerHTML = restorepage;
+  newWin.close();
+}

@@ -66,4 +66,14 @@ $(function() {
       newWin.close();
   	})  	
   });
+
+  $('.btn-search').click(function(event) {
+    var search = $('#form-search').val();
+    if (search!='') {
+      console.log(search);
+      $.post(app.base_url+'product/search/'+search, {form_search: search}, function(data, textStatus, xhr) {
+        window.location.replace(app.base_url+'product/search/'+search);
+      });
+    }
+  });
 });

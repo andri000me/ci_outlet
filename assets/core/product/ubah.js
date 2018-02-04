@@ -14,10 +14,11 @@ function hapus(id,no,key) {
 	});
 }
 
-function edit(id,kode,exp,key) {
+function edit(id,kode,msisdn,exp,key) {
 	$('#mtitle').html(kode);
 	$('#mid').val(id);
 	$('#mkey').val(key);
+	$('#mmsisdn').val(msisdn);
 	$('#mkode').val(kode);
 	$('#mdate').val(exp);
 	$('#mymodal').modal('show');
@@ -27,10 +28,11 @@ function simpan() {
 	var mid = $('#mid').val();
 	var key = $('#mkey').val();
 	var mkode = $('#mkode').val();
+	var mmsisdn = $('#mmsisdn').val();
 	var mdate = $('#mdate').val();
 	var mketerangan = $(".modal-body #mketerangan").val();
 
-	$.post(app.base_url+'product/update_detail_stock', {id_pdetail: mid, kode: mkode, exp: mdate, keterangan: mketerangan}, function(data, textStatus, xhr) {
+	$.post(app.base_url+'product/update_detail_stock', {id_pdetail: mid, kode: mkode, msisdn: mmsisdn, exp: mdate, keterangan: mketerangan}, function(data, textStatus, xhr) {
 		$('#mymodal').modal('hide');
 		window.location.href = app.base_url+'product/ubah/'+key;
 	});
@@ -47,4 +49,25 @@ $(function() {
 		$('#harga_jual').val(val);
 		$('#harga_akhir').val(val);
 	});
+
+	$('table[for="stock"]').DataTable({
+    "paging": true,
+    "lengthChange": false,
+    "searching": true,
+    "ordering": false,
+    "info": false,
+    "pageLength": 15,
+    "autoWidth": false,
+    // "dom": 'Bfrtip',
+    // "buttons": [ 'copy', 'csv', 'excel', 'pdf', 'print' ],
+    "oLanguage": {
+      "oPaginate": {
+        "sNext": '»',
+        "sPrevious": '«'
+      },
+      "sZeroRecords":    "TIDAK ADA DATA YANG SESUAI",
+      "sLoadingRecords": "DATA KOSONG",
+      "sEmptyTable":     "DATA TIDAK TERSEDIA",
+    }
+  });
 });

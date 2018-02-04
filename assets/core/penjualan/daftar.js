@@ -73,9 +73,34 @@ $(function() {
   $('#gsrbayar').keyup(function(event) {
     var gsrbayar = $('#gsrbayar').val();
     var total = $('#gsrtotal').val();
+    var potongan = $('#gsrpotongan').val();
+    if (potongan.length==0) {
+      var kembali = parseInt(gsrbayar) - parseInt(total);
+      $('#gsrkembalian').val(kembali);
+    }
+    else {
+      var htotal = parseInt(total) - parseInt(potongan);
+      var altkembali = parseInt(gsrbayar) - parseInt(htotal);
+      $('#gsrkembalian').val(altkembali);
+    }
+    $('#print_gsr').removeClass('disabled');
+  });
 
-    var kembali = parseInt(gsrbayar) - parseInt(total);
-    $('#gsrkembalian').val(kembali);
+  $('#gsrpotongan').keyup(function(event) {
+    var gsrbayar = $('#gsrbayar').val();
+    var total = $('#gsrtotal').val();
+    var potongan = $('#gsrpotongan').val();
+
+    if (potongan.length==0) {
+      var kembali = parseInt(gsrbayar) - parseInt(total);
+      $('#gsrkembalian').val(kembali);
+    }
+    else {
+      var htotal = parseInt(total) - parseInt(potongan);
+      var altkembali = parseInt(gsrbayar) - parseInt(htotal);
+      $('#gsrkembalian').val(altkembali);
+    }
+    $('#print_gsr').removeClass('disabled');
   });
 
   if ($('#gsrtotal').val()==='') {
@@ -209,12 +234,6 @@ function printContent(printDoc){
   newWin.document.body.innerHTML = restorepage;
   newWin.close();
   window.location.href = app.base_url+'penjualan';
-
-  // newWin.document.write(data);
-  // newWin.document.close();
-  // newWin.focus();
-  // newWin.print();
-  // newWin.close();
 }
 
 function hapus(key) {
@@ -294,11 +313,12 @@ function printgrosir() {
   var printableObjects=[];
   var gsrbayar = $('#gsrbayar').val();
   var kembali = $('#gsrkembalian').val();
+  var potongan = $('#gsrpotongan').val();
 
   $.ajax({
     url: app.base_url+'penjualan/gsr_print/',
     type: 'GET',
-    data: {},
+    data: {pgsrbayar:gsrbayar,pgsrkembalian:kembali, gsrpotongan:potongan},
   })
   .done(function(data) {
     console.log(data);
