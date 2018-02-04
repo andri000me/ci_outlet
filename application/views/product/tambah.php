@@ -131,14 +131,14 @@
                 </div>
                 <br>
                 <div class="form-group">
-                  <label class="control-label col-md-3">Harga jual</label>
+                  <label class="control-label col-md-3">Harga Pcs</label>
                   <div class="col-md-6">
                     <input type="text" class="form-control" name="harga_jual" id="harga_jual" value="<?php echo set_value('harga_jual')?>" placeholder="0000">
                   </div>
                 </div>
                 <br>
                 <div class="form-group">
-                  <label class="control-label col-md-3">Harga akhir</label>
+                  <label class="control-label col-md-3">Harga Grosir</label>
                   <div class="col-md-6">
                     <input type="text" class="form-control" name="harga_akhir" id="harga_akhir" value="<?php echo set_value('harga_akhir')?>" placeholder="0000">
                   </div>

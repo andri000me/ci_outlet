@@ -14,6 +14,7 @@ class Laporan extends CI_Controller
 		$this->load->model('M_lokasi');
 		$this->load->model('M_users');
 		$this->load->model('M_penjualan');
+		$this->load->model('M_setting');
 	}
 
 	public function index($param)
@@ -131,9 +132,10 @@ class Laporan extends CI_Controller
 			$config['num_tag_close'] = '</li>';
 			$this->pagination->initialize($config);
 
-			$data['pagination'] = $this->pagination->create_links();	
+			// $data['pagination'] = $this->pagination->create_links();	
 			$data['no']=$offset+1;
-			$data['listdata'] = $this->M_laporan->transaksi($id_lokasi, $id_user, $tgl_awal, $tgl_akhir, $perpage, $offset);
+			// $data['listdata'] = $this->M_laporan->transaksi($id_lokasi, $id_user, $tgl_awal, $tgl_akhir, $perpage, $offset);
+			$data['listdata'] = $this->M_laporan->transaksi($id_lokasi, $id_user, $tgl_awal, $tgl_akhir, null, null);
 			// echo $this->db->last_query();
 			$data['listlokasi'] = $this->M_lokasi->show(null,null,null);
 			$data['listuser'] = $this->M_users->show(null,null,null);
@@ -199,9 +201,10 @@ class Laporan extends CI_Controller
 			$config['num_tag_close'] = '</li>';
 			$this->pagination->initialize($config);
 
-			$data['pagination'] = $this->pagination->create_links();	
+			// $data['pagination'] = $this->pagination->create_links();	
 			$data['no']=$offset+1;
-			$data['listdata'] = $this->M_laporan->grosir($id_lokasi, $id_user, $tgl_awal, $tgl_akhir, $perpage, $offset);
+			// $data['listdata'] = $this->M_laporan->grosir($id_lokasi, $id_user, $tgl_awal, $tgl_akhir, $perpage, $offset);
+			$data['listdata'] = $this->M_laporan->grosir($id_lokasi, $id_user, $tgl_awal, $tgl_akhir, null,null);
 			$data['listlokasi'] = $this->M_lokasi->show(null,null,null);
 			$data['listuser'] = $this->M_users->show(null,null,null);
 			$data['tgl_awal'] = $tgl_awal;
@@ -214,6 +217,39 @@ class Laporan extends CI_Controller
 			$data['page'] = 'laporan/log-grosir';
 		}
 		$this->load->view('page', $data);
+	}
+
+	public function print_faktur_pcs()
+	{
+		$id_faktur = $this->input->post('faktur');
+		$detail_transaksi = $this->M_penjualan->detail_transaksi($id_faktur);
+		$waktu_transaksi = $detail_transaksi->row()->tanggal;
+		$data['id_faktur'] = $id_faktur;
+		$data['no_faktur'] = $detail_transaksi->row()->no_faktur;
+		$data['set'] = $this->M_setting->show();
+		$data['waktu_transaksi'] = $waktu_transaksi;
+		$data['listdata'] = $this->M_penjualan->detail_transaksi($id_faktur);
+		$data['totalbelanja'] = $this->M_penjualan->total_detail_transaksi($id_faktur);
+		$this->load->view('penjualan/print', $data);
+		// echo json_encode($id_faktur);
+	}
+
+	public function print_faktur_grs()
+	{
+		$id_faktur = $this->input->post('faktur');
+		$detail_transaksi = $this->M_penjualan->get_transaksigrosir($id_faktur,null);
+		$waktu_transaksi = $detail_transaksi->row()->tanggal;
+		$data['id_faktur'] = $detail_transaksi->row()->id_faktur;
+		$data['no_faktur'] = $detail_transaksi->row()->no_faktur;
+		$data['set'] = $this->M_setting->show();
+		$data['waktu_transaksi'] = $waktu_transaksi;
+		$data['listdata'] = $this->M_penjualan->show_grosir_detail_grp($detail_transaksi->row()->id_faktur);
+		$data['total'] = $detail_transaksi->row()->total;
+		$data['totalbelanja'] = $detail_transaksi->row()->total_akhir;
+		$data['potongan'] = $detail_transaksi->row()->potongan;
+		$data['bayar'] = $detail_transaksi->row()->bayar;
+		$data['kembalian'] = $detail_transaksi->row()->kembalian;
+		$this->load->view('penjualan/print2', $data);
 	}
 
 	public function tampilkan()

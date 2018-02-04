@@ -20,6 +20,7 @@ class Product extends CI_Controller
 
 	public function index($param1=null, $param2=null, $param3=null)
 	{
+		if (my_level()==null || my_level()=='Admin') {
 		$total_row=$this->M_product->count();
 		$perpage=15;
 		$uri_segment=3;
@@ -68,6 +69,8 @@ class Product extends CI_Controller
 		$data['js'] = 'product/daftar';
 		$data['page'] = 'product/daftar';
 		$this->load->view('page', $data);
+		}
+		else {redirect('product/stock-product');}
 	}
 
 	public function tambah($param1=null, $param2=null, $param3=null)
@@ -257,10 +260,11 @@ class Product extends CI_Controller
 		$config['num_tag_close'] = '</li>';
 		$this->pagination->initialize($config);
 
-		$data['pagination'] = $this->pagination->create_links();
+		// $data['pagination'] = $this->pagination->create_links();
 		$data['no']=$offset+1;
 		$data['kode']=encrypts($id_product);
-		$data['listdetailstock']= $this->M_product->show_stock_detail($id_product,$perpage,$offset);
+		// $data['listdetailstock']= $this->M_product->show_stock_detail($id_product,$perpage,$offset);
+		$data['listdetailstock']= $this->M_product->show_stock_detail($id_product,null, null);
 		$data['listdata'] = $this->M_product->get($id_product);
 		$data['listsupplier'] = $this->M_supplier->show(null,null,null);
 		$data['listjenis'] = $this->M_jenis->show(null,null,null);
@@ -333,14 +337,16 @@ class Product extends CI_Controller
 		$config['num_tag_close'] = '</li>';
 		$this->pagination->initialize($config);
 
-		$data['pagination'] = $this->pagination->create_links();
+		// $data['pagination'] = $this->pagination->create_links();
 		$data['no']=$offset+1;
-		$data['kode']=encrypts($id_product);
-		$data['listdetailstock']= $this->M_product->show_stock_detail($id_product,$perpage,$offset);
+		$data['kode']=$param1;
+		// $data['listdetailstock']= $this->M_product->show_stock_detail($id_product,$perpage,$offset);
+		$data['listdetailstock']= $this->M_product->show_stock_detail($id_product,null,null);
 		$data['title'] = 'Product';
 		$data['subtitle'] = 'Detail Data Product';
 		$data['br'] = array();
 		$data['product'] = 'class="active"';
+		$data['js'] = 'product/detail';
 		$data['page'] = 'product/detail';
 		$this->load->view('page', $data);
 	}
@@ -381,11 +387,13 @@ class Product extends CI_Controller
 		// $value = json_decode(file_get_contents('php://input'));
 		$id_pdetail = $this->input->post('id_pdetail');
 		$kode = $this->input->post('kode');
+		$msisdn = $this->input->post('msisdn');
 		$exp = $this->input->post('exp');
 		$keterangan = $this->input->post('keterangan');
 
 		$arr_data = array(
 			'kode'=>$kode,
+			'msisdn'=>$msisdn,
 			'exp'=>$exp,
 			'keterangan'=>$keterangan
 		);
@@ -471,7 +479,7 @@ class Product extends CI_Controller
 									if ($value[0]!=null) {
 										$arr_data[] = array(
 											'id_product'=>$id_product,
-											'kode'=>$value[0],
+											'kode'=>intval($value[0]),
 											'exp'=>$expired,
 											'tglmasuk'=>date('Y-m-d H:i:s'),
 											'product'=>product($id_product),
@@ -648,7 +656,14 @@ class Product extends CI_Controller
 								$arr_data = array();
 								foreach ($dataArr as $key => $value) {
 									if ($value[0]!=null) {
-										$arr_data[] = array('id_product'=>$id_product,'kode'=>$value[0], 'exp'=>$expired, 'flag'=>'1');
+										$arr_data[] = array(
+											'id_product'=>$id_product,
+											'kode'=>intval($value[0]),
+											'exp'=>$expired,
+											'tglmasuk'=>date('Y-m-d H:i:s'),
+											'product'=>product($id_product),
+											'harga'=>harga($id_product),
+											'flag'=>'1');
 									}
 								}
 								$this->M_product->stock_batch($arr_data);
@@ -707,7 +722,7 @@ class Product extends CI_Controller
 								$isi=array();
 								while (($data = fgetcsv($handle, 5000, ",")) !== FALSE) {
 									if($batas!=0 && $data[0]!='')	{
-										$arr_data[] = array('id_product'=>$id_product,'kode'=>$data[0], 'exp'=>$expired, 'flag'=>'1');
+										$arr_data[] = array('id_product'=>$id_product,'kode'=>intval($data[0]), 'exp'=>$expired, 'flag'=>'1');
 									}
 									$batas++;
 								}
@@ -752,6 +767,7 @@ class Product extends CI_Controller
 		$data['subtitle'] = 'Import Stock';
 		$data['br'] = array();
 		$data['js'] = 'product/import';
+		$data['section'] = 'update_stock';
 		$data['product'] = 'class="active"';
 		$data['page'] = 'product/import_stock';
 		$this->load->view('page', $data);
@@ -845,7 +861,7 @@ class Product extends CI_Controller
 								$arr_data = array();
 								foreach ($dataArr as $key => $value) {
 									if ($value[0]!=null) {
-										if (check_barang($value[0])==null) $arr_data[] = array('kode'=>$value[0], 'barang'=>$value[1], 'keterangan'=>$value[2]);
+										if (check_barang($value[0])==null) $arr_data[] = array('kode'=>intval($value[0]), 'barang'=>$value[1], 'keterangan'=>$value[2]);
 									}
 								}
 								if(count($arr_data)==null){
@@ -1021,6 +1037,62 @@ class Product extends CI_Controller
 		$data['stock_product'] = 'class="active"';
 		$data['js'] = 'product/daftar';
 		$data['page'] = 'product/stock_product';
+		$this->load->view('page', $data);
+	}
+
+	public function tambah_stock_product($param1=null, $param2=null, $param3=null)
+	{
+		$id_product = decrypts($param1);
+		if ($this->input->post('simpan')) {
+			$this->form_validation->set_rules('kode', 'Kode', 'trim|required|numeric');
+			$this->form_validation->set_rules('msisdn', 'MSISDN', 'trim|required|numeric|min_length[9]|max_length[12]');
+			$this->form_validation->set_rules('expired', 'Expired', 'required');
+			$this->form_validation->set_rules('harga_awal', 'Harga Pcs');
+			$this->form_validation->set_rules('harga_akhir', 'Harga Grosir');
+			if ($this->form_validation->run()) {
+				if ($this->input->post('harga_awal')=='') {$harga = harga($id_product);}
+				else {$harga= $this->input->post('harga_awal');}
+				if ($this->input->post('harga_akhir')=='') {$harga_grosir = harga($id_product);}
+				else {$harga_grosir= $this->input->post('harga_akhir');}
+				$kode= $this->input->post('kode');
+				$msisdn= $this->input->post('msisdn');
+				$exp= $this->input->post('expired');
+				$arr_data[] = array(
+						'id_product'=>$id_product,
+						'kode'=>$kode,
+						'exp'=>$exp,
+						'msisdn'=>$msisdn,
+						'tglmasuk'=>date('Y-m-d H:i:s'),
+						'product'=>product($id_product),
+						'harga'=>$harga,
+						'harga_grosir'=>$harga_grosir,
+						'flag'=>'1');
+				$this->M_product->stock_batch($arr_data);
+				$this->session->set_flashdata('msg',msg_success('Data berhasil disimpan.'));
+				redirect('product/detail/'.$param1.'.phtml');
+			}
+		}
+		elseif ($this->input->post('batal')) redirect('product/detail/'.$param1.'.phtml');
+		$data['kode']=$param1;
+		$data['title'] = 'Product';
+		$data['subtitle'] = 'Tambah Stock Product';
+		$data['br'] = array();
+		$data['product'] = 'class="active"';
+		$data['page'] = 'product/tambah_stock';
+		$this->load->view('page', $data);
+	}
+
+	public function search($param1=null)
+	{
+		$get = $this->M_product->search($param1);
+		$data['listdata'] = $get;
+		$data['search']=$param1;
+		$data['title'] = 'Product';
+		$data['subtitle'] = 'Search';
+		$data['br'] = array();
+		$data['js'] = 'product/search';
+		$data['product'] = 'class="active"';
+		$data['page'] = 'product/search';
 		$this->load->view('page', $data);
 	}
 }

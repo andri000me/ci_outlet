@@ -34,16 +34,34 @@
                   <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>
                   </div>
-                  <input type="text" class="form-control" name="expired" id="datepicker" value="<?php echo date('Y-m-d');?>" data-date-format="yyyy-mm-dd">
+                  <input type="text" class="form-control" name="expired" id="datepicker" value="<?php echo date('Y-m-d');?>"data-date-format="yyyy-mm-dd">
                 </div>
               </div>
+              <?php
+              if (@$section) {
+                echo '
+                <div class="form-group">
+                  <label class="control-label col-md-3">Harga Pcs</label>
+                  <div class="col-md-6">
+                    <input type="text" name="harga_awal" class="form-control" placeholder="000000">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3">Harga Grosir</label>
+                  <div class="col-md-6">
+                    <input type="text" name="harga_akhir" class="form-control" placeholder="000000">
+                  </div>
+                </div>
+                ';
+              }
+              ?>
               <div class="form-group">
                 <label class="control-label col-md-3">File</label>
                 <div class="col-md-6 input-group">
                   <span class="input-group-btn">
                     <div class="btn btn-default btn-flat">
                       <span class="">Browse</span>
-                      <input type="file" accept="application/vnd.ms-excel,text/plain" name="userfile"/>
+                      <input type="file" name="userfile"/>
                     </div>
                   </span>
                   <input type="text" class="form-control url">

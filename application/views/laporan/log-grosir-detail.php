@@ -55,6 +55,15 @@
                 <tr>
                   <td colspan="3" class="text-right">Total Belanja</td>
                   <td class="text-right"><?php echo $transaksi->row()->total; ?></td>
+                  <td rowspan="5"></td>
+                </tr>
+                <tr>
+                  <td colspan="3" class="text-right">Potongan</td>
+                  <td class="text-right"><?php echo $transaksi->row()->potongan; ?></td>
+                </tr>
+                <tr>
+                  <td colspan="3" class="text-right">Total Akhir</td>
+                  <td class="text-right"><?php echo $transaksi->row()->total_akhir; ?></td>
                 </tr>
                 <tr>
                   <td colspan="3" class="text-right">Bayar</td>

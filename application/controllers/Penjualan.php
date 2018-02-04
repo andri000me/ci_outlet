@@ -249,8 +249,9 @@ class Penjualan extends CI_Controller
 
 	public function gsr_print()
 	{
-		$gsrbayar = $this->input->post('pgsrbayar');
-		$gsrkembalian = $this->input->post('pgsrkembalian');
+		$gsrbayar = $this->input->get_post('pgsrbayar');
+		$gsrkembalian = $this->input->get_post('pgsrkembalian');
+		$gsrpotongan = $this->input->get_post('gsrpotongan');
 		$id_user = my_userid();
 		$id_lokasi = my_location();
 		$get_nofaktur = $this->M_penjualan->last_grosir_faktur();
@@ -270,6 +271,7 @@ class Penjualan extends CI_Controller
 		$load_tmp = $this->M_penjualan->show_grosir_tmp($id_user,$id_lokasi);
 		$id_product = $load_tmp->row()->id_product;
 		$stock_awal = stock($id_product);
+		$total_akhir = intval($total) - intval($gsrpotongan);
 
 		$arr_faktur['id_faktur'] = $id_faktur;
 		$arr_faktur['id_user'] = $id_user;
@@ -277,6 +279,8 @@ class Penjualan extends CI_Controller
 		$arr_faktur['tanggal'] = date('Y-m-d H:i:s');
 		$arr_faktur['no_faktur'] = $no_faktur_now;
 		$arr_faktur['total'] = $total;
+		$arr_faktur['potongan'] = $gsrpotongan;
+		$arr_faktur['total_akhir'] = $total_akhir;
 		$arr_faktur['keterangan'] = null;
 		$arr_faktur['bayar'] = $gsrbayar;
 		$arr_faktur['kembalian'] = $gsrkembalian;
@@ -326,7 +330,11 @@ class Penjualan extends CI_Controller
 		$data['set'] = $this->M_setting->show();
 		$data['waktu_transaksi'] = $waktu_transaksi;
 		$data['listdata'] = $this->M_penjualan->show_grosir_detail_grp($detail_transaksi->row()->id_faktur);
-		$data['totalbelanja'] = $detail_transaksi->row()->total;
+		$data['total'] = $detail_transaksi->row()->total;
+		$data['totalbelanja'] = $detail_transaksi->row()->total_akhir;
+		$data['potongan'] = $detail_transaksi->row()->potongan;
+		$data['bayar'] = $detail_transaksi->row()->bayar;
+		$data['kembalian'] = $detail_transaksi->row()->kembalian;
 		$this->load->view('penjualan/print2', $data);
 	}
 

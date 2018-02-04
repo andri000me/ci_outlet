@@ -49,34 +49,35 @@
             
           </div>
           <br>
-          <div class="table-responsive">
-            <table class="table no-margin table-bordered">
+          <div>
+            <table class="table no-margin table-bordered" for="pcs_list">
               <thead>
                 <tr>
-                  <th width="1">#</th>
+                  <th>#</th>
                   <th>Tanggal</th>
                   <th>No Faktur</th>
-                  <th>Kode</th>
+                  <th>MSISDN/ Barcode</th>
                   <th>Product</th>
                   <th>Harga (Rp)</th>
                   <th>Quantity</th>
-                  <th width="1">Opsi</th>
+                  <th>Opsi</th>
                 </tr>
               </thead>
               <tbody>
                 <?php if ($listdata->result()) {
+                  $no=1;
                   foreach ($listdata->result() as $val) {
                     echo '<tr>
                     <td>'.$no.'</td>
                     <td>'.$val->tanggal.'</td>
                     <td>'.$val->no_faktur.'</td>
-                    <td>'.$val->kode_stock.'</td>
+                    <td>'.msisdn($val->kode_stock).'<br>'.$val->kode_stock.'</td>
                     <td>'.$val->nama_product.'</td>
                     <td>'.$val->totalbelanja_akhir.'</td>
                     <td>'.$val->totalitem.'</td>
-                    <td>';
-                    echo anchor('laporan/log-transaksi/detail/'.encrypts($val->id_faktur),'<i class="fa fa-fw fa-file-text"></i>', array('class'=>'text-green','title'=>'Detail', 'data-toggle'=>'tooltip', 'data-placement'=>'top'));
-                    echo '</td>
+                    <td>
+                    <a href="#" class="text-blue" title="Print" data-toggle="tooltip" data-placement="top" onclick="print('.$val->id_faktur.')"><i class="fa fa-fw fa-print"></i></a>
+                    </td>
                     </tr>';
                     $no++;
                   }

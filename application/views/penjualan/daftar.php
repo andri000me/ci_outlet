@@ -124,6 +124,12 @@
                     height: 50px;
                 ">
                 <br>
+                <input type="text" name="gsrpotongan" id="gsrpotongan" placeholder="Potongan" class="form-control text-right" style="
+                    font-size: xx-large;
+                    width: 100%;
+                    height: 50px;
+                ">
+                <br>
                 <input type="text" name="gsrkembalian" id="gsrkembalian" placeholder="Kembali" class="form-control text-right" style="
                     font-size: xx-large;
                     width: 100%;

@@ -121,14 +121,14 @@
                 </div>
                 <br>
                 <div class="form-group">
-                  <label class="control-label col-md-3">Harga jual</label>
+                  <label class="control-label col-md-3">Harga Pcs</label>
                   <div class="col-md-6">
                     <input type="text" class="form-control" name="harga_jual" id="harga_jual" value="<?php echo $listdata->row()->harga_jual;?>" placeholder="0000">
                   </div>
                 </div>
                 <br>
                 <div class="form-group">
-                  <label class="control-label col-md-3">Harga akhir</label>
+                  <label class="control-label col-md-3">Harga Grosir</label>
                   <div class="col-md-6">
                     <input type="text" class="form-control" name="harga_akhir" id="harga_akhir" value="<?php echo $listdata->row()->harga_akhir;?>" placeholder="0000">
                   </div>
@@ -152,11 +152,12 @@
             </div>
           </div>
           <br>
-          <table class="table no-margin">
+          <table class="table no-margin" for="stock">
             <thead>
               <tr>
                 <th width="1">#</th>
                 <th>Kode Barcode</th>
+                <th>msisdn</th>
                 <th>Expired</th>
                 <th>Keterangan</th>
                 <th width="100" class="center">Opsi</th>
@@ -169,10 +170,11 @@
                     echo '<tr>';
                     echo '<td>'.$no.'</td>';
                     echo '<td>'.$key->kode.'</td>';
+                    echo '<td>'.$key->msisdn.'</td>';
                     echo '<td>'.$key->exp.'</td>';
                     echo '<td>'.$key->keterangan.'</td>';
                     echo '<td class="center">';
-                    echo '<a href="javascript:void(0);" class="text-blue" onclick="javascript:edit(\''.$key->id_pdetail.'\',\''.$key->kode.'\',\''.$key->exp.'\',\''.encrypts($listdata->row()->id_product).'\')" title="Edit" data-toggle="tooltip" data-placement="top"><i class="fa fa-fw fa-edit"></i></a>';
+                    echo '<a href="javascript:void(0);" class="text-blue" onclick="javascript:edit(\''.$key->id_pdetail.'\',\''.$key->kode.'\',\''.$key->msisdn.'\',\''.$key->exp.'\',\''.encrypts($listdata->row()->id_product).'\')" title="Edit" data-toggle="tooltip" data-placement="top"><i class="fa fa-fw fa-edit"></i></a>';
                     echo '<a href="javascript:void(0);" class="text-red" onclick="hapus(\''.$key->id_pdetail.'\',\''.$no.'\',\''.encrypts($listdata->row()->id_product).'\')" title="Hapus" data-toggle="tooltip" data-placement="top"><i class="fa fa-fw fa-trash"></i></a>';
                     echo '</td>';
                     echo '</tr>';
@@ -180,7 +182,7 @@
                   }
                 }
                 else {
-                  echo '<tr><td colspan="4" class="center bg-red">Data Kosong</td></tr>';
+                  echo '<tr><td colspan="6" class="center bg-red">Data Kosong</td></tr>';
                 }
               ?>
             </tbody>
@@ -215,6 +217,10 @@
             <input type="hidden" id="mid">
             <input type="hidden" id="mkey">
             <input type="text" class="form-control" id="mkode">
+          </div>
+          <div class="form-group">
+            <label>MSISDN</label>
+            <input type="text" class="form-control" id="mmsisdn">
           </div>
           <div class="form-group">
             <label>Expired</label>

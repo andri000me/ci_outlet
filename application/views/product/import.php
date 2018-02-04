@@ -22,7 +22,7 @@
                   <span class="input-group-btn">
                     <div class="btn btn-default btn-flat">
                       <span class="">Browse</span>
-                      <input type="file" accept="application/vnd.ms-excel,text/plain" name="userfile"/>
+                      <input type="file" name="userfile"/>
                     </div>
                   </span>
                   <input type="text" class="form-control url">

@@ -273,4 +273,14 @@ class M_product extends CI_Model
 		$this->db->where("b.exp BETWEEN '$tgl_awal' AND '$tgl_akhir' ");
 		return $this->db->get();
 	}
+
+	public function search($key)
+	{
+		$this->db->select('*');
+		$this->db->from($this->detail);
+		$this->db->where("product LIKE '%$key%' ESCAPE '!' OR
+			msisdn LIKE '%$key%' ESCAPE '!' OR
+			kode LIKE '%$key%' ESCAPE '!'");
+		return $this->db->get();
+	}
 }

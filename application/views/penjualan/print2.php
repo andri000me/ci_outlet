@@ -107,13 +107,28 @@
 			?>
 			<tr>
 				<td>&nbsp;</td>
-				<td colspan="2" class="right border">Total Harga</td>
-				<td class="right border"><?php echo $totalbelanja;?></td>
+				<td colspan="2" class="right border">Total Belanja</td>
+				<td class="right border"><?php echo $total;?></td>
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
-				<td colspan="2" class="right">Total belanja</td>
+				<td colspan="2" class="right">Potongan</td>
+				<td class="right"><?php echo $potongan;?></td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td colspan="2" class="right">Total Akhir</td>
 				<td class="right"><?php echo $totalbelanja;?></td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td colspan="2" class="right">Bayar</td>
+				<td class="right"><?php echo $bayar;?></td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td colspan="2" class="right">Kembali</td>
+				<td class="right"><?php echo $kembalian;?></td>
 			</tr>
 		</table>
 	</section>

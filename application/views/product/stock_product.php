@@ -11,6 +11,20 @@
             if($msg!=NULL)
             echo $msg;
           ?>
+          <div class="search">
+            <div class="row">
+              <div class="col-xs-5">
+                <label class="sr-only" for="inputEmail">Supplier</label>
+                <div class="input-group">
+                  <input type="text" id="form-search" class="form-control" placeholder="Search&hellip;">
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-default btn-search">Go</button>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br>
           <div class="table-responsive">
             <table class="table no-margin table-bordered">
               <thead>

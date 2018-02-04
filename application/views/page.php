@@ -15,7 +15,7 @@
 	<link rel="stylesheet" href="<?php echo base_url();?>assets/mite.css">
 	<link rel="stylesheet" href="<?php echo base_url();?>assets/datepicker.min.css">
 	<link rel="stylesheet" href="<?php echo base_url();?>assets/plugins/daterangepicker/daterangepicker.css">
-	<link rel="stylesheet" href="<?php echo base_url();?>assets/plugins/datatables/jquery.dataTables.css">
+	<!-- <link rel="stylesheet" href="<?php echo base_url();?>assets/plugins/datatables/jquery.dataTables.css"> -->
 	<link rel="stylesheet" href="<?php echo base_url();?>assets/plugins/datatables/dataTables.bootstrap.css">
 	<!-- <link rel="stylesheet" href="<?php echo base_url();?>assets/plugins/datepicker/datepicker3.css"> -->
 	<script type="text/javascript">var app={base_url:'<?php echo base_url();?>'}</script>
@@ -30,8 +30,8 @@
 	<script type="text/javascript" src="<?php echo base_url();?>assets/plugins/daterangepicker/daterangepicker.js"></script>
 	<!-- <script type="text/javascript" src="<?php echo base_url();?>assets/plugins/datepicker/bootstrap-datepicker.js"></script> -->
 	<script type="text/javascript" src="<?php echo base_url();?>assets/plugins/sweetalert2/dist/sweetalert2.min.js"></script>
-	<script type="text/javascript" src="<?php echo base_url();?>assets/plugins/datatables/jquery.dataTables.js"></script>
-	<script type="text/javascript" src="<?php echo base_url();?>assets/plugins/datatables/dataTables.bootstrap.js"></script>
+	<script type="text/javascript" src="<?php echo base_url();?>assets/plugins/datatables/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="<?php echo base_url();?>assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
 	<?php if(@$js!=NULL) echo '<script type="text/javascript" src="'.base_url().'assets/core/'.$js.'.js"></script>';?>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">

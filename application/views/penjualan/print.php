@@ -88,6 +88,11 @@
 		<table width="100%">
 			<?php if ($listdata->result()) {
 				foreach ($listdata->result() as $value) {
+					if (msisdn($value->kode_stock)) {
+						echo '<tr>
+						<td>MSISDN: '.msisdn($value->kode_stock).'</td>
+						</tr>';
+					}
 					echo '<tr>
 					<td>'.$value->kode_stock.'</td>
 					</tr>';

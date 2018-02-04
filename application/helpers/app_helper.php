@@ -340,6 +340,17 @@ function harga($value=NULL)
 	else return null;
 }
 
+function harga_grosir($value=NULL)
+{
+	$app =& get_instance();
+	$app->load->model('M_product');
+	$get = $app->M_product->get($value);
+	if ($get->result()) {
+		return $get->row()->harga_akhir;
+	}
+	else return null;
+}
+
 function stocklimit()
 {
 	$app =& get_instance();
@@ -403,6 +414,19 @@ function stock_kodestock($value=NULL)
 	$get = $app->M_product->stock_detail($value);
 	if ($get->result()) {
 		return $get->row()->kode;
+	}
+	else {
+		return null;
+	}
+}
+
+function msisdn($value=NULL)
+{
+	$app =& get_instance();
+	$app->load->model('M_product');
+	$get = $app->M_product->barcode($value);
+	if ($get->result()) {
+		return $get->row()->msisdn;
 	}
 	else {
 		return null;

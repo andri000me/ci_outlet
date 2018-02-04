@@ -49,8 +49,8 @@
             
           </div>
           <br>
-          <div class="table-responsive">
-            <table class="table no-margin table-bordered">
+          <div>
+            <table class="table no-margin table-bordered" for="grosir_list">
               <thead>
                 <tr>
                   <th width="1">#</th>
@@ -68,7 +68,8 @@
                     <td>'.$val->tanggal.'</td>
                     <td>'.$val->no_faktur.'</td>
                     <td>'.$val->total.'</td>
-                    <td>';
+                    <td>
+                    <a href="#" class="text-blue" title="Print" data-toggle="tooltip" data-placement="top" onclick="print('.$val->id_faktur.')"><i class="fa fa-fw fa-print"></i></a> ';
                     echo anchor('laporan/log-grosir/detail/'.encrypts($val->id_faktur),'<i class="fa fa-fw fa-file-text"></i>', array('class'=>'text-green','title'=>'Detail', 'data-toggle'=>'tooltip', 'data-placement'=>'top'));
                     echo '</td>
                     </tr>';

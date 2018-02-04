@@ -45,23 +45,27 @@
                 <td>: <?php if(empty($listdata->row()->harga_awal)) {echo '-';} else echo $listdata->row()->harga_awal;?></td>
               </tr>
               <tr>
-                <td>Harga Jual</td>
+                <td>Harga Pcs</td>
                 <td>: <?php if(empty($listdata->row()->harga_jual)) {echo '-';} else echo $listdata->row()->harga_jual;?></td>
               </tr>
               <tr>
-                <td>Harga Akhir</td>
+                <td>Harga Grosir</td>
                 <td>: <?php if(empty($listdata->row()->harga_akhir)) {echo '-';} else echo $listdata->row()->harga_akhir;?></td>
               </tr>
             </tbody>
           </table>
           <br>
-            <?php echo anchor('product/update_stock/'.$kode, 'Import Stock', array('class'=>"btn btn-flat btn-primary"));?>
-          <br>
-          <table class="table no-margin table-bordered">
+            <?php 
+            echo anchor('product/tambah-stock-product/'.$kode, 'Tambah Stock', array('class'=>"btn btn-flat btn-primary"));
+            echo ' ';
+            echo anchor('product/update-stock/'.$kode, 'Import Stock', array('class'=>"btn btn-flat btn-primary"));?>
+          <br><br>
+          <table class="table no-margin table-bordered" for="stock">
             <thead>
               <tr>
                 <th width="1">#</th>
                 <th>Barcode Stock Product</th>
+                <th>msisdn</th>
                 <th>Expired</th>
               </tr>
             </thead>
@@ -72,13 +76,14 @@
                     echo '<tr>';
                     echo '<td>'.$no.'</td>';
                     echo '<td>'.$key->kode.'</td>';
+                    echo '<td>'.$key->msisdn.'</td>';
                     echo '<td>'.$key->exp.'</td>';
                     echo '</tr>';
                     $no++;
                   }
                 }
                 else {
-                  echo '<tr><td colspan="4" class="center bg-red">Data Kosong</td></tr>';
+                  echo '<tr><td colspan="5" class="center bg-red">Data Kosong</td></tr>';
                 }
               ?>
             </tbody>
